@@ -1,11 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
-import Box from '@mui/material/Box';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import HomeIcon from '@mui/icons-material/Home';
 
@@ -21,17 +19,17 @@ export default function History() {
     const routeTo = useNavigate();
 
     useEffect(() => {
-        const fetchHistory = async () => {
-            try {
-                const history = await getHistoryOfUser();
-                setMeetings(history);
-            } catch {
-                // IMPLEMENT SNACKBAR
-            }
+    const fetchHistory = async () => {
+        try {
+            const history = await getHistoryOfUser();
+            setMeetings(history);
+        } catch {
+            // IMPLEMENT SNACKBAR
         }
+    }
 
-        fetchHistory();
-    }, [])
+    fetchHistory();
+}, [getHistoryOfUser])
 
     let formatDate = (dateString) => {
 

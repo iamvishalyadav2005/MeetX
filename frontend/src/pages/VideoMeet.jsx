@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react'
 import io from "socket.io-client";
 import { Badge, IconButton, TextField } from '@mui/material';
@@ -65,10 +66,9 @@ export default function VideoMeetComponent() {
     // }
 
     useEffect(() => {
-        console.log("HELLO")
-        getPermissions();
-
-    })
+    console.log("HELLO");
+    getPermissions();
+}, []);
 
     let getDislayMedia = () => {
         if (screen) {
@@ -122,14 +122,13 @@ export default function VideoMeetComponent() {
     };
 
     useEffect(() => {
-        if (video !== undefined && audio !== undefined) {
-            getUserMedia();
-            console.log("SET STATE HAS ", video, audio);
+    if (video !== undefined && audio !== undefined) {
+        getUserMedia();
+        console.log("SET STATE HAS ", video, audio);
+    }
+}, [video, audio, getUserMedia])
 
-        }
 
-
-    }, [video, audio])
     let getMedia = () => {
         setVideo(videoAvailable);
         setAudio(audioAvailable);
@@ -392,10 +391,10 @@ export default function VideoMeetComponent() {
     }
 
     useEffect(() => {
-        if (screen !== undefined) {
-            getDislayMedia();
-        }
-    }, [screen])
+    if (screen !== undefined) {
+        getDislayMedia();
+    }
+}, [screen, getDislayMedia])
     let handleScreen = () => {
         setScreen(!screen);
     }
@@ -408,16 +407,6 @@ export default function VideoMeetComponent() {
         window.location.href = "/"
     }
 
-    let openChat = () => {
-        setModal(true);
-        setNewMessages(0);
-    }
-    let closeChat = () => {
-        setModal(false);
-    }
-    let handleMessage = (e) => {
-        setMessage(e.target.value);
-    }
 
     const addMessage = (data, sender, socketIdSender) => {
         setMessages((prevMessages) => [
