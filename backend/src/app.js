@@ -6,6 +6,11 @@ import { connectToSocket } from "./controllers/socketManager.js";
 import cors from "cors";
 import userRoutes from "./routes/users.routes.js";
 
+console.log("ENV CHECK:", {
+  MONGO_URI: process.env.MONGO_URI ? "LOADED ✅" : "MISSING ❌",
+  JWT_SECRET: process.env.JWT_SECRET ? "LOADED ✅" : "MISSING ❌",
+});
+
 const app = express();
 const server = createServer(app);
 const io = connectToSocket(server);
