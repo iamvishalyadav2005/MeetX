@@ -1,8 +1,7 @@
-let IS_PROD = false;
-const server = IS_PROD ?
-    "https://meetx-backend-8ym6.onrender.com" :
+let IS_PROD = true;
 
-    "http://192.168.1.5:8000";  // ← your laptop IP, NOT localhost
-
+const server = IS_PROD
+  ? "https://meetx-backend-8ym6.onrender.com"
+  : "http://localhost:8000";
 
 export default server;
