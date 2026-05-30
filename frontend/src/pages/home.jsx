@@ -17,7 +17,7 @@ export default function HomeComponent() {
   const [meetingCode, setMeetingCode] = useState("");
   const [history, setHistory] = useState([]);
   const [copied, setCopied] = useState(false);
-  const [activeNav, setActiveNav] = useState("home");
+  const [activeNav] = useState("home");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [joinError, setJoinError] = useState("");
   const [newMeetingCode] = useState(() => generateCode());
@@ -32,8 +32,8 @@ export default function HomeComponent() {
   }
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+  fetchHistory();
+}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchHistory = async () => {
     setLoading(true);

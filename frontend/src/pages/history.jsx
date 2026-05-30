@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Video, Clock, Calendar, Search, RefreshCw,
-  ChevronRight, Trash2, Download, Filter,
-  ArrowLeft, History, Hash, LogOut, Settings
+  ChevronRight, Filter,
+  ArrowLeft, History, Hash, LogOut
 } from "lucide-react";
 import { AuthContext } from "../contexts/AuthContext";
 
@@ -22,8 +22,8 @@ export default function HistoryPage() {
   useEffect(() => { fetchHistory(); }, []);
 
   useEffect(() => {
-    applyFilter();
-  }, [search, filter, history]);
+  applyFilter();
+}, [search, filter, history]);
 
   const fetchHistory = async () => {
     setLoading(true);
