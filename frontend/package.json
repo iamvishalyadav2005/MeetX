@@ -14,7 +14,6 @@
     "framer-motion": "^12.38.0",
     "http-status": "^1.7.3",
     "lucide-react": "^1.14.0",
-    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",
@@ -23,10 +22,10 @@
     "socket.io-client": "^4.7.3",
     "web-vitals": "^2.1.4"
   },
- "scripts": {
-  "start": "react-app-rewired start",
-  "build": "react-app-rewired build",
-  "test": "react-app-rewired test",
+  "scripts": {
+  "start": "react-scripts start",
+  "build": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts build",
+  "test": "react-scripts test",
   "eject": "react-scripts eject"
 },
   "eslintConfig": {
@@ -48,6 +47,6 @@
     ]
   },
   "devDependencies": {
-    "react-app-rewired": "^2.2.1"
+    "cross-env": "^10.1.0"
   }
 }
