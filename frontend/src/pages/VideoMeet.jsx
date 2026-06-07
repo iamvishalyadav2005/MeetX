@@ -60,6 +60,16 @@ export default function VideoMeetComponent() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+
+// ─── Reattach local stream when view switches solo ↔ grid ─────
+
+  useEffect(() => {
+  if (localVideoRef.current && localStreamRef.current) {
+    localVideoRef.current.srcObject = localStreamRef.current;
+    localVideoRef.current.style.transform = screenSharing ? "none" : "scaleX(-1)";
+  }
+}, [participants.length, screenSharing]);
+
   // ─── Main socket + media setup ─────────────────────────────────
   useEffect(() => {
     let stream = null;
