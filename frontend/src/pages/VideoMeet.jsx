@@ -46,6 +46,8 @@ export default function VideoMeetComponent() {
   const screenStreamRef = useRef(null);
   const peersRef = useRef({});
   const videoRefs = useRef({});
+  // Store original camera video track for screen‑share toggle
+  const originalVideoTrackRef = useRef(null);
 
   // ─── Timer ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -248,31 +250,85 @@ export default function VideoMeetComponent() {
   };
 
   const toggleScreen = async () => {
-    if (!screenSharing) {
-      try {
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: { cursor: "always" }, audio: false,
-        });
-        screenStreamRef.current = screenStream;
-        if (localVideoRef.current) localVideoRef.current.srcObject = screenStream;
-        setScreenSharing(true);
-        showToast("Screen sharing started.");
-        screenStream.getVideoTracks()[0].onended = stopScreenShare;
-      } catch {
-        showToast("Screen sharing cancelled.");
+  if (!screenSharing) {
+    try {
+      // Save original camera track
+      originalVideoTrackRef.current = localStreamRef.current?.getVideoTracks()[0] || null;
+
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: { cursor: "always" }, audio: false,
+      });
+
+      screenStreamRef.current = screenStream;
+      const screenVideoTrack = screenStream.getVideoTracks()[0];
+
+      // Replace track in all peer connections
+      Object.values(peersRef.current).forEach((peer) => {
+        if (typeof peer.replaceTrack === "function") {
+          try {
+            peer.replaceTrack(
+              originalVideoTrackRef.current,  // old track
+              screenVideoTrack,               // new track
+              localStreamRef.current          // stream
+            );
+          } catch (e) {
+            console.warn("replaceTrack error", e);
+          }
+        }
+      });
+
+      // FIX 1: Show screen share WITHOUT mirror effect
+      // Use srcObject directly to screenStream — no scaleX(-1)
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = screenStream;
+        localVideoRef.current.style.transform = "none"; // ← remove mirror
       }
-    } else {
-      stopScreenShare();
+
+      setScreenSharing(true);
+      showToast("💡 Tip: Share a specific tab/window to avoid mirror effect.");
+      screenVideoTrack.onended = stopScreenShare;
+
+    } catch {
+      showToast("Screen sharing cancelled.");
     }
-  };
+  } else {
+    stopScreenShare();
+  }
+};
 
   const stopScreenShare = () => {
-    screenStreamRef.current?.getTracks().forEach(t => t.stop());
-    screenStreamRef.current = null;
-    if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
-    setScreenSharing(false);
-    showToast("Screen sharing stopped.");
-  };
+  const screenVideoTrack = screenStreamRef.current?.getVideoTracks()[0];
+
+  // Restore camera track in all peer connections
+  if (originalVideoTrackRef.current && screenVideoTrack) {
+    Object.values(peersRef.current).forEach((peer) => {
+      if (typeof peer.replaceTrack === "function") {
+        try {
+          peer.replaceTrack(
+            screenVideoTrack,                // old track (screen)
+            originalVideoTrackRef.current,   // new track (camera)
+            localStreamRef.current           // stream
+          );
+        } catch (e) {
+          console.warn("restore replaceTrack error", e);
+        }
+      }
+    });
+  }
+
+  // Stop screen stream tracks
+  screenStreamRef.current?.getTracks().forEach(t => t.stop());
+  screenStreamRef.current = null;
+
+  // FIX 2: Restore camera feed WITH mirror effect back
+  if (localVideoRef.current) {
+    localVideoRef.current.srcObject = localStreamRef.current;
+    localVideoRef.current.style.transform = "scaleX(-1)"; // ← restore mirror
+  }
+
+  setScreenSharing(false);
+  showToast("Screen sharing stopped.");
+};
 
   // FIX: sendChat — don't add to local messages manually.
   // The server broadcasts back to everyone including us via "chat-message".
@@ -359,7 +415,7 @@ export default function VideoMeetComponent() {
               <video
                 ref={localVideoRef}
                 autoPlay muted playsInline
-                style={{ ...styles.videoEl, transform: "scaleX(-1)" }}
+                style={{ ...styles.videoEl, transform: screenSharing ? "scaleX(1)" : "scaleX(-1)" }}
               />
               {!camOn && (
                 <div style={styles.camOffOverlay}>
@@ -422,7 +478,7 @@ export default function VideoMeetComponent() {
                 <video
                   ref={localVideoRef}
                   autoPlay muted playsInline
-                  style={{ ...styles.videoEl, transform: "scaleX(-1)" }}
+                  style={{ ...styles.videoEl, transform: screenSharing ? "scaleX(1)" : "scaleX(-1)" }}
                 />
                 {!camOn && (
                   <div style={styles.camOffOverlay}>
