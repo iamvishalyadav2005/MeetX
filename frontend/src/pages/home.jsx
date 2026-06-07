@@ -299,7 +299,6 @@ export default function HomeComponent() {
                 {[
                   { icon: <Mic size={13} />, label: "Audio" },
                   { icon: <Camera size={13} />, label: "Video" },
-                  { icon: <Users size={13} />, label: "Up to 100" },
                 ].map(f => (
                   <div key={f.label} style={styles.meetingFeature}>
                     {f.icon} {f.label}
