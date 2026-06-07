@@ -72,13 +72,13 @@ Built with a modern tech stack including React.js, Node.js, Socket.IO, and WebRT
 ## 📸 Screenshots
 
 ### Landing Page
-![Landing Page](frontend/public/Screenshots/landing.png)
+![Landing Page](frontend/public/Screenshots/Landing.png)
 
 ### Authentication
-![Auth Page](frontend/public/Screenshots/auth.png)
+![Auth Page](frontend/public/Screenshots/Auth.png)
 
 ### Meeting Dashboard
-![Dashboard](frontend/public/Screenshots/dashboard.png)
+![Dashboard](frontend/public/Screenshots/Dashboard.png)
 
 ### Video Meeting Room
 ![Video Meet](frontend/public/Screenshots/Videomeet.png)
